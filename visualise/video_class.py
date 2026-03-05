@@ -7,11 +7,11 @@ from model.simple import Net
 
 
 class VideoVisualizer:
-    def __init__(self, device=None, samplerate=44100, blocksize=1024):
+    def __init__(self, path, device=None, samplerate=44100, blocksize=1024):
         self.cap = cv2.VideoCapture(0)
         self.running = False
         self.model = Net()
-        self.model.load_state_dict(torch.load("face_landmark_model.pth"))
+        self.model.load_state_dict(torch.load(path))
         self.model.eval()
         self.transform = transforms.Compose(
             [
@@ -119,11 +119,7 @@ class VideoVisualizer:
         self.running = False
 
 
-visualizer = VideoVisualizer()
+visualizer = VideoVisualizer(path="checkpoints/2936944_simple_model.pth")
 
 visualizer.open()
-
-# Now it's running in background
-
-# When done:
 visualizer.close()
