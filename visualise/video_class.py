@@ -3,14 +3,23 @@ import torch
 from torchvision import transforms
 from PIL import Image
 
-from model.simple import Net
+from model.architectures.net import Net
+from model.architectures.vgg19 import VGG19
+
+
+if torch.backends.mps.is_available():
+    mps_device = torch.device("mps")
+    x = torch.ones(1, device=mps_device)
+    print(x)
+else:
+    print("MPS device not found.")
 
 
 class VideoVisualizer:
     def __init__(self, path, device=None, samplerate=44100, blocksize=1024):
         self.cap = cv2.VideoCapture(0)
         self.running = False
-        self.model = Net()
+        self.model = VGG19()
         self.model.load_state_dict(torch.load(path))
         self.model.eval()
         self.transform = transforms.Compose(
@@ -119,7 +128,7 @@ class VideoVisualizer:
         self.running = False
 
 
-visualizer = VideoVisualizer(path="checkpoints/2936944_simple_model.pth")
+visualizer = VideoVisualizer(path="checkpoints/face_landmark_model_10.pth")
 
 visualizer.open()
 visualizer.close()
